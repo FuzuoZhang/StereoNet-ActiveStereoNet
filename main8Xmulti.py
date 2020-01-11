@@ -127,7 +127,6 @@ def main():
     log.info('full training time = {: 2f} Hours'.format((time.time() - start_full_time) / 3600))
 
 
-
 def train(dataloader, model, optimizer, log, epoch=0):
 
     stages = args.stages
@@ -144,9 +143,6 @@ def train(dataloader, model, optimizer, log, epoch=0):
         disp_L = disp_L.float().cuda()
 
         outputs = model(imgL, imgR)
-        
-        
-
         outputs = [torch.squeeze(output, 1) for output in outputs]
         
         loss = [GERF_loss(disp_L, outputs[0], args)]
@@ -190,6 +186,7 @@ def train(dataloader, model, optimizer, log, epoch=0):
     info_str = '\t'.join(['Stage {} = {:.2f}'.format(x, losses[x].avg) for x in range(stages)])
     log.info('Average train loss = ' + info_str)
 
+
 def test(dataloader, model, log):
 
     stages = args.stages
@@ -224,36 +221,6 @@ def test(dataloader, model, log):
 
         log.info('[{}/{}] {}'.format(
             batch_idx, length_loader, info_str))
-
-
-        #vis
-        # _, H, W = outputs[0].shape
-        # all_results = torch.zeros((len(outputs)+1, 1, H, W))
-        # for j in range(len(outputs)):
-        #     all_results[j, 0, :, :] = outputs[j][0, :, :]/255.0
-        # all_results[-1, 0, :, :] = disp_L[:, :]/255.0
-        # torchvision.utils.save_image(all_results, join(args.save_path, "iter-%d.jpg" % batch_idx))
-        # # print(imgL)
-        # im = np.array(imgL[0,:,:,:].permute(1,2,0)*255, dtype=np.uint8)
-        # print(im.shape)
-        # cv.imwrite(join(args.save_path, "itercolor-%d.jpg" % batch_idx),im)
-
-
-
-
-        # _, H, W = outputs[0].shape
-        # all_results_color = torch.zeros((H, 5*W))
-        # all_results_color[:,:W]= outputs[0][0, :, :]
-        # all_results_color[:,W:2*W]= outputs[1][0, :, :]
-        # # print(disp_L)
-        # all_results_color[:,2*W:3*W]= outputs[2][0, :, :]
-        # all_results_color[:,3*W:4*W]= outputs[3][0, :, :]
-        
-        # all_results_color[:,4*W:5*W]= disp_L[:, :]
-        
-
-        # im_color = cv.applyColorMap(np.array(all_results_color*2, dtype=np.uint8), cv.COLORMAP_JET)
-        # cv.imwrite(join(args.save_path, "iterpredcolor-%d.jpg" % batch_idx),im_color)
 
     info_str = ', '.join(['Stage {}={:.2f}'.format(x, EPES[x].avg) for x in range(stages)])
     log.info('Average test EPE = ' + info_str)

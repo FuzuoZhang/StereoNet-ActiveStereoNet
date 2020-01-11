@@ -76,6 +76,7 @@ def disparity_loader(path):
         return data
 
 class myImageFloder(data.Dataset):
+    #data.Dataset为一个包装数据的抽象类，需要重定义__getitem__和__len__
     def __init__(self,
                  left,
                  right,
@@ -94,7 +95,8 @@ class myImageFloder(data.Dataset):
         self.normalize = normalize
 
     def __getitem__(self, index):
-        
+        #输入的self.left, self.right,self.disp_L
+        #分别为文件名列表
         left = self.left[index]
         
         right = self.right[index]
